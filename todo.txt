@@ -1,0 +1,15 @@
+Dos soldados se posicíonan a A y una vez que se posicionan en la cobertura los soldados avisan a un médico para que vaya a dejar paquetes en sus posiciones.
+
+El médico (M1) se dirige a A, deja los paquetes en la posición de los dos soldados. Una vez hecho esto se reincorpora a los demás soldados por el pasillo de B.
+
+
+3 Soldados van por pasillo de B con un médico detrás (M2) que intentarán entrar a por la bandera.
+
+- M1 -> dejar los paquetes en las posiciones de los dos y volver con los del B y seguir la misma mecánica de M2.
+- M2 -> Se posiciona detrás de los soldados y si aĺgun soldado supera el umbral de vida irá al médico para curarse e incorporarse a la batalla.
+- Soldados Arriba -> Función normal.
+- Soldados de abajo -> Cuando un soldado de arriba reciba el primer disparo los dos soldados irán a por la bandera
+
+- Cuando un soldado se retire a curarse le avisa al médico para que suelte las curas.
+ 
+
