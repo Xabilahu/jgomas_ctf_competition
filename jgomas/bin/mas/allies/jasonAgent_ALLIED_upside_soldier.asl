@@ -159,5 +159,12 @@ if (Length > 0) {
       -cfa_refuse.  
 
 
+    //!add_task(task(750,"TASK_GOTO_POSITION",MyName,pos(500,0,100),"")).
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}. 
+   <- 
+    -tasks(_);
+    +tasks([]);
+    .my_name(MyName);
+    ?my_position(X,Y,Z);
+	!add_task(task(751,"TASK_GOTO_POSITION",MyName,pos(X+100,Y,Z-100),"")); // 2 TASK_GOTO_POSITION replace the last one with the new one
+    !add_task(task(749,"TASK_ATTACK",MyName,pos(X+175,Y,Z-50),"")).
