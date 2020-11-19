@@ -166,5 +166,7 @@ if (Length > 0) {
     +tasks([]);
     .my_name(MyName);
     ?my_position(X,Y,Z);
+    .println("Objetivo :", X+161, " ", Z-49);
 	!add_task(task(751,"TASK_GOTO_POSITION",MyName,pos(X+100,Y,Z-100),"")); // 2 TASK_GOTO_POSITION replace the last one with the new one
-    !add_task(task(749,"TASK_ATTACK",MyName,pos(X+175,Y,Z-50),"")).
+    !add_task(task(749,"TASK_ATTACK",MyName,pos(X+150,Y,Z-40),""));
+    !add_task(task(748,"TASK_ATTACK",MyName,pos(X+170,Y,Z-60),"")).
