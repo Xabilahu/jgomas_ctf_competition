@@ -1,4 +1,3 @@
 **/*.log*
-APDescription.txt
-MTPs-Main-Container.txt
-JGOMAS_Statistics.txt
+jgomas/bin/mas/APDescription.txt
+jgomas/bin/mas/MTPs-Main-Container.txt
