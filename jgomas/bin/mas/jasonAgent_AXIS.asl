@@ -12,8 +12,6 @@ type("CLASS_SOLDIER").
 patrollingRadius(64).
 
 
-
-
 { include("jgomas.asl") }
 
 
@@ -25,6 +23,14 @@ patrollingRadius(64).
 * Actions definitions
 *
 *******************************/
+
++!generate_safe_position
+    <- ?my_position(_, Y, _);
+       .random(X);
+       .random(Z);
+       NewX = X * 5 + 35;  //93
+       NewZ = Z * 20 + 220; //228
+       !safe_pos(NewX, Y, NewZ).
 
 /////////////////////////////////
 //  GET AGENT TO AIM
@@ -146,7 +152,28 @@ patrollingRadius(64).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!perform_look_action .
++!perform_look_action 
+    <-  ?tasks(TaskList);
+        ?current_task(task(_, TaskType, _, pos(TaskX, TaskY, TaskZ), _));
+        if (TaskType == "TASK_GOTO_POSITION") { //Prevents bug of getting stuck in a wall recalculating its path
+            ?prev_pos(X, Y, Z);
+            if (TaskX == X & TaskY == Y & TaskZ == Z) {
+                .delete(task(_, "TASK_GOTO_POSITION", _, pos(TaskX, TaskY, TaskZ), _), TaskList, NewTaskList);
+                -+tasks(NewTaskList);
+                !generate_safe_position;
+                ?safe_pos(SafeX, SafeY, SafeZ);
+                -safe_pos(SafeX, SafeY, SafeZ);
+                .my_name(MyName);
+                !add_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+                ?task_priority("TASK_GOTO_POSITION", Priority);
+                -+current_task(task(Priority, "TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+                .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
+            }
+        }
+        ?my_position(MyX, MyY, MyZ);
+        -+prev_pos(MyX, MyY, MyZ);
+       . 
+
 /// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
 
 /**
@@ -205,7 +232,39 @@ patrollingRadius(64).
  *
  */
 +!update_targets 
-	<-	?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR UPDATE_TARGETS GOES HERE.") }.
+    <-  ?tasks(TaskList);
+        if (.member(task(_, "TASK_PATROLLING", _, _, _), TaskList)) {
+            .delete(task(_, "TASK_PATROLLING", _, _, _), TaskList, NewTaskList);
+            -+tasks(NewTaskList);
+            .println("Removed TASK_PATROLLING from my tasks.");
+        }
+        
+        ?tasks(TaskListNew);
+        .length(TaskListNew, TaskLength);
+        if (TaskLength <= 0) {
+            !generate_safe_position;
+            ?safe_pos(SafeX, SafeY, SafeZ);
+            -safe_pos(SafeX, SafeY, SafeZ);
+            .my_name(MyName);
+            !add_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+            .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
+        } else { // This removes TASK_WALKING_PATH bug: infinite cycle of +1 Priority to TASK_WALKING_PATH
+            ?current_task(task(Priority, TaskType, _, _, _));
+
+            if (TaskType == "TASK_WALKING_PATH" & task_priority(TaskType, TaskPrio) & Priority > (TaskPrio + 1)) {
+                .delete(task(_, "TASK_WALKING_PATH", _, _, _), TaskListNew, UnBuggedTaskList1);
+                .delete(task(_, "TASK_GOTO_POSITION", _, _, _), UnBuggedTaskList1, UnBuggedTaskList2);
+                -+tasks(UnBuggedTaskList2);
+                !generate_safe_position;
+                ?safe_pos(SafeX, SafeY, SafeZ);
+                -safe_pos(SafeX, SafeY, SafeZ);
+                .my_name(MyName);
+                !add_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+                -+current_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ)));
+                .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
+            }
+        }.
+
 	
 	
 /////////////////////////////////
@@ -313,6 +372,8 @@ patrollingRadius(64).
 //  Initialize variables
 /////////////////////////////////
 
-+!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
-
++!init 
+    <-  .my_name(MyName);
+        -+current_task(task(749, "DUMMY_TASK", MyName, pos(0, 0, 0), ""));
+        ?my_position(X, Y, Z);
+        +prev_pos(X, Y, Z). 
