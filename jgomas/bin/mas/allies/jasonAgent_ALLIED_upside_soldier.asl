@@ -15,6 +15,9 @@ type("CLASS_SOLDIER").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
+?current_task(T);
+.println(T);
+
 if (Length > 0) {
     +bucle(0);
     
@@ -158,15 +161,12 @@ if (Length > 0) {
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
-
-    //!add_task(task(750,"TASK_GOTO_POSITION",MyName,pos(500,0,100),"")).
 +!init
    <- 
     -tasks(_);
     +tasks([]);
+    .random(R);
     .my_name(MyName);
     ?my_position(X,Y,Z);
-    .println("Objetivo :", X+161, " ", Z-49);
-	!add_task(task(751,"TASK_GOTO_POSITION",MyName,pos(X+100,Y,Z-100),"")); // 2 TASK_GOTO_POSITION replace the last one with the new one
-    !add_task(task(749,"TASK_ATTACK",MyName,pos(X+150,Y,Z-40),""));
-    !add_task(task(748,"TASK_ATTACK",MyName,pos(X+170,Y,Z-60),"")).
+    !add_task(task("TASK_GOTO_POSITION",MyName,pos(X+175,Y,Z-88-R*2),""));
+	!add_task(task("TASK_ATTACK",MyName,pos(X,Y,Z-88-R*2),"")).
