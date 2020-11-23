@@ -28,8 +28,10 @@ patrollingRadius(64).
     <- ?my_position(_, Y, _);
        .random(X);
        .random(Z);
-       NewX = X * 5 + 35;  //93
-       NewZ = Z * 20 + 220; //228
+       //NewX = X * 5 + 35;  //93
+       //NewZ = Z * 20 + 220; //228
+       NewX = X * 5 + 34;  //93
+       NewZ = Z * 20 + 219; //228
        !safe_pos(NewX, Y, NewZ).
 
 /////////////////////////////////
@@ -48,54 +50,67 @@ patrollingRadius(64).
  */
 +!get_agent_to_aim
     <-  ?debug(Mode); if (Mode<=2) { .println("Looking for agents to aim."); }
-        ?fovObjects(FOVObjects);
-        .length(FOVObjects, Length);
-        
-        ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
-        
-        if (Length > 0) {
-		    +bucle(0);
-    
-            -+aimed("false");
-    
-            while (aimed("false") & bucle(X) & (X < Length)) {
-  
-                //.println("En el bucle, y X vale:", X);
-                
-                .nth(X, FOVObjects, Object);
-                // Object structure 
-                // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
-                .nth(2, Object, Type);
-                
-                ?debug(Mode); if (Mode<=2) { .println("Objeto Analizado: ", Object); }
-                
-                if (Type > 1000) {
-                    ?debug(Mode); if (Mode<=2) { .println("I found some object."); }
-                } else {
-                    // Object may be an enemy
-                    .nth(1, Object, Team);
-                    ?my_formattedTeam(MyTeam);
-          
-                    if (Team == 100) {  // Only if I'm AXIS
-				
- 					    ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
-					    +aimed_agent(Object);
-                        -+aimed("true");
+    ?fovObjects(FOVObjects);
+    .length(FOVObjects, Length);
 
-                    }
+    ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
+
+    if (Length > 0) {
+        +bucle(0);
+        
+        -+aimed("false");
+        
+        while (not no_shoot("true") & bucle(X) & (X < Length)) {
+            
+            //.println("En el bucle, y X vale:", X);
+            
+            .nth(X, FOVObjects, Object);
+            // Object structure
+            // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
+            .nth(2, Object, Type);
+            
+            ?debug(Mode); if (Mode<=2) { .println("Objeto Analizado: ", Object); }
+            
+            if (Type > 1000) {
+                ?debug(Mode); if (Mode<=2) { .println("I found some object."); }
+            } else {
+                // Object may be an enemy
+                .nth(1, Object, Team);
+                ?my_formattedTeam(MyTeam);
+                
+                if (Team == 100) {  // Only if I'm AXIS
                     
+                    ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
+                    +aimed_agent(Object);
+                    -+aimed("true");
+                    
+                }  else {
+                    if (Team == 200) {
+                        .nth(3, Object, Angle);
+                        if (math.abs(Angle) < 0.1) {
+                            +no_shoot("true");
+                            .println("AXIS in front, not aiming!");
+                        } 
+                    }
                 }
-             
-                -+bucle(X+1);
                 
             }
-                     
-       
+            
+            -+bucle(X+1);
+            
         }
 
-     -bucle(_).
-
+        if (no_shoot("true")) {
+            -aimed_agent(_);
+            -+aimed("false");
+            -no_shoot("true");
+        }
         
+        
+    }
+
+    -bucle(_).
+
 
 /////////////////////////////////
 //  LOOK RESPONSE
@@ -174,6 +189,7 @@ patrollingRadius(64).
         -+prev_pos(MyX, MyY, MyZ);
        . 
 
+
 /// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
 
 /**
@@ -238,7 +254,7 @@ patrollingRadius(64).
             -+tasks(NewTaskList);
             .println("Removed TASK_PATROLLING from my tasks.");
         }
-        
+
         ?tasks(TaskListNew);
         .length(TaskListNew, TaskLength);
         if (TaskLength <= 0) {
@@ -264,6 +280,7 @@ patrollingRadius(64).
                 .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
             }
         }.
+
 
 	
 	
