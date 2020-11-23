@@ -165,7 +165,7 @@ patrollingRadius(32).
             .nth(1, CurrentObject, ObjectTeam);
             .nth(6, CurrentObject, pos(ObjectX, ObjectY, ObjectZ));
             if (ObjectTeam == 100) {
-                .my_team("AXIS", MyTeam);
+                .my_team("fieldops_AXIS", MyTeam);
                 .concat("enemy(", ObjectX, ", ", ObjectY, ", ", ObjectZ, ")", MsgContent);
                 .send_msg_with_conversation_id(MyTeam, tell, MsgContent, "INT");
             }
