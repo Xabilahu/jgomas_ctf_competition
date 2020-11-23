@@ -28,10 +28,8 @@ patrollingRadius(64).
     <- ?my_position(_, Y, _);
        .random(X);
        .random(Z);
-       //NewX = X * 5 + 35;  //93
-       //NewZ = Z * 20 + 220; //228
-       NewX = X * 5 + 34;  //93
-       NewZ = Z * 20 + 219; //228
+       NewX = X * 10 + 50;  //93
+       NewZ = Z * 20 + 225; //228
        !safe_pos(NewX, Y, NewZ).
 
 /////////////////////////////////
