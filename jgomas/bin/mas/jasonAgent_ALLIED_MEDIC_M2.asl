@@ -46,15 +46,13 @@ type("CLASS_MEDIC").
 
     ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-    /*?healing_ticks(H);
-    if(H==20){
-        .println("20 ticks");
-        ?my_position(X,Y,Z);
-        !add_task(task(9,"TASK_GIVE_MEDICPAKS", "M2", pos(X, 0, Z), ""));
-        -+healing_ticks(0);
-    }else{
-        -+healing_ticks(H+1);
-    }*/
+    ?arrived_pos(Xa,Za);
+    ?my_position(X,Y,Z);
+    if((X>=(Xa-1) & X<=(Xa+1)) & (Z>=(Za-1) & Z<=(Za+1))){
+        !add_task(task(5000,"TASK_GOTO_POSITION", "M2", pos(X, 0,Z+4), ""));
+        .println("looking down!");
+        
+    }
     
    
     if (Length > 0) {
@@ -337,9 +335,9 @@ type("CLASS_MEDIC").
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
     -tasks(_);
     +tasks([]);
+    +arrived_pos(90,225);
     ?my_position(X,Y,Z);
-    //+healing_ticks(0);
-    !add_task(task(5000,"TASK_GOTO_POSITION", "M2", pos(100, 0, 248), "")).
-    //!add_task(task(4000,"TASK_GIVE_MEDICPAKS", "M2", pos(100, 0, 250), "")).
+    !add_task(task(4000,"TASK_WALKING_PATH","M2", pos(90, 0,228), ""));
+    !add_task(task(5000,"TASK_GOTO_POSITION", "M2", pos(90, 0, 225), "")).
 	 
 
