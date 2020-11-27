@@ -45,6 +45,7 @@ type("CLASS_MEDIC").
     .length(FOVObjects, Length);
 
     ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
+
     /*?healing_ticks(H);
     if(H==20){
         .println("20 ticks");
@@ -54,6 +55,7 @@ type("CLASS_MEDIC").
     }else{
         -+healing_ticks(H+1);
     }*/
+    
    
     if (Length > 0) {
         +bucle(0);
@@ -335,9 +337,9 @@ type("CLASS_MEDIC").
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
     -tasks(_);
     +tasks([]);
-    //+healing_ticks(0);
     ?my_position(X,Y,Z);
-    !add_task(task(5000,"TASK_GOTO_POSITION", "M1", pos(100, 0,228), "")).
-    //!add_task(task(8,"TASK_GIVE_MEDICPAKS", "M1", pos(100, 0, 234), "")).
+    //+healing_ticks(0);
+    !add_task(task(5000,"TASK_GOTO_POSITION", "M2", pos(100, 0, 248), "")).
+    //!add_task(task(4000,"TASK_GIVE_MEDICPAKS", "M2", pos(100, 0, 250), "")).
 	 
 
