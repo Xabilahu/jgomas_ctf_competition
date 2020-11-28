@@ -18,6 +18,10 @@ type("CLASS_SOLDIER").
 ?current_task(T);
 .println(T);
 
+if (T == []){
+    +waiting;
+}
+
 if (Length > 0) {
     +bucle(0);
     
@@ -54,19 +58,16 @@ if (Length > 0) {
         -+bucle(X+1);
         
     }
-    
-    
 }
 
 -bucle(_).
-
 
 +look_response(FOVObjects)[source(M)]
     <-  //-waiting_look_response;
         .length(FOVObjects, Length);
         if (Length > 0) {
             ?debug(Mode); if (Mode<=1) { .println("HAY ", Length, " OBJETOS A MI ALREDEDOR:\n", FOVObjects); }
-        };    
+        };
         -look_response(_)[source(M)];
         -+fovObjects(FOVObjects);
         //.//;
@@ -165,7 +166,6 @@ if (Length > 0) {
    <- 
     -tasks(_);
     +tasks([]);
-    .random(R);
     .my_name(MyName);
     ?my_position(X,Y,Z);
     !add_task(task("TASK_ATTACK",MyName,pos(110, 0, 225),""));

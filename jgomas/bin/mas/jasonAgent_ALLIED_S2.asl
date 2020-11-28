@@ -165,7 +165,6 @@ if (Length > 0) {
    <- 
     -tasks(_);
     +tasks([]);
-    .random(R);
     .my_name(MyName);
     ?my_position(X,Y,Z);
     !add_task(task("TASK_ATTACK",MyName,pos(108, 0, 225),""));
