@@ -15,8 +15,22 @@ type("CLASS_SOLDIER").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-?current_task(T);
-//.println(T);
+if(not ready){
+/*    ?my_position(X,Y,Z);
+    ?going_position(GX,GY,GZ);
+
+    !distance(pos(GX, 0, GZ));
+    ?distance(D);   
+    .println(D);
+    if(D < 1 & g_step(1)){
+        -going_position(GX,GY,GZ);
+        +going_position(GX,GY,GZ+5);
+        -g_step(1);
+    }else{*/
+        ?going_position(GX,GY,GZ); // Quitar si descomentar
+        +order(move,GX,GZ);
+    /*}*/
+}
 
 if (Length > 0) {
     +bucle(0);
@@ -162,21 +176,8 @@ if (Length > 0) {
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
-+ready(A)[source(M)]
-    <-
-    .println("READY S2");
-    ?initial_task(T);
-    !add_task(T);
-    -ready(A).
 
 +!init
-   <- 
-    .my_name(MyName);
-    +initial_task(task(1000,"TASK_GET_OBJECTIVE",MyName,pos(224,0,224),""));
-    -tasks(_);
-    +tasks([]);
-    ?my_position(X,Y,Z);
-    !add_task(task("TASK_ATTACK",MyName,pos(108, 0, 225),""));
-    !add_task(task("TASK_GOTO_POSITION",MyName,pos(108, 0, 226),""))
-
-    .
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
+      +going_position(108,0,225);
+      +g_step(1) .

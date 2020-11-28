@@ -15,32 +15,37 @@ type("CLASS_SOLDIER").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-//?current_task(T);
-//.println(T);
+//X+175,Y,Z-88-R*2
+?g_step(S);
+if(not attack & S==1){
+    ?going_position(GX,GY,GZ);
+    !distance(pos(GX, 0, GZ));
+    ?distance(D);
 
-?my_position(XP,YP,ZP);
-?destination(DX,DY,DZ);
+    if(D < 1){
+        -going_position(_,_,_);
+        +waiting_position(GX+175,GY,GZ);
+        -g_step(_);
+        +g_step(2);
+    }
 
-!distance(pos(DX,DY,DZ));
-?distance(D);
-
-.println(D);
-
-if(D < 150){
-    .println("dentroif");
-    .my_team("ALLIED",E1);
-    //.my_team("ALLIED_MEDIC",E2);
-    .println(E1);
-    .concat("ready(1)", Content);
-    .send_msg_with_conversation_id(E1,tell,Content,"INT");
-    /*.concat("ready(1)", Content1);
-    .send_msg_with_conversation_id(E2,tell,Content1,"INT");*/
-    //.send_msg_with_conversation_id("SOLDIER_DOWN_2",tell,Content,"INT");
-    //.send_msg_with_conversation_id("M2",tell,Content,"INT");
-    //.send_msg_with_conversation_id("M1",tell,Content,"INT");
-    //.send_msg_with_conversation_id("SOLDIER_DOWN_1",tell,Content,"INT");
-    .println("enviado");
+    +order(move,GX,GZ);
 }
+
+if(not attack & S==2){
+    ?waiting_position(WX,WY,WZ);
+    !distance(pos(WX, 0, WZ));
+    ?distance(D);
+    if(D < 20 & not sent){
+        .my_team("ALLIED",E1);
+        .concat("ready", Content);
+        .send_msg_with_conversation_id(E1,tell,Content,"INT");
+        +sent;
+    } 
+    
+    +order(move,WX,WZ);
+}
+
 
 
 if (Length > 0) {
@@ -186,7 +191,7 @@ if (Length > 0) {
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
-+!init
+/*+!init
    <-
     +initial_task(task(1000,"TASK_GET_OBJECTIVE","Manager",pos(224,0,224),""));
     -tasks(_);
@@ -196,4 +201,11 @@ if (Length > 0) {
     ?my_position(X,Y,Z);
     +destination(X+175,Y,Z-88-R*2);
     !add_task(task("TASK_GOTO_POSITION",MyName,pos(X+175,Y,Z-88-R*2),""));
-	!add_task(task("TASK_ATTACK",MyName,pos(X,Y,Z-88-R*2),"")).
+	!add_task(task("TASK_ATTACK",MyName,pos(X,Y,Z-88-R*2),"")).*/
+
++!init
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
+    ?my_position(X,Y,Z);
+    .random(R);
+    +going_position(X,Y,Z-88-R*2);
+    +g_step(1) .

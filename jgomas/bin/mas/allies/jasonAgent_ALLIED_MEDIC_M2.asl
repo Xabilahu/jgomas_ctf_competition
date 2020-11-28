@@ -15,11 +15,21 @@ type("CLASS_MEDIC").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-?current_task(task(C_priority, T, _, _, _));
-//.println(T);
+if(not ready){
+/*    ?my_position(X,Y,Z);
+    ?going_position(GX,GY,GZ);
 
-while(not ready & T == "TASK_GET_OBJECTIVE"){
-    .println("");
+    !distance(pos(GX, 0, GZ));
+    ?distance(D);   
+    .println(D);
+    if(D < 1 & g_step(1)){
+        -going_position(GX,GY,GZ);
+        +going_position(GX,GY,GZ+5);
+        -g_step(1);
+    }else{*/
+        ?going_position(GX,GY,GZ); // Quitar si descomentar
+        +order(move,GX,GZ);
+    /*}*/
 }
 
 if (Length > 0) {
@@ -167,13 +177,6 @@ if (Length > 0) {
       -cfa_refuse.  
 
 +!init
-   <- 
-    .my_name(MyName);
-    +initial_task(task(1000,"TASK_GET_OBJECTIVE",MyName,pos(224,0,224),""));
-    -tasks(_);
-    +tasks([]);
-    ?my_position(X,Y,Z);
-    !add_task(task("TASK_ATTACK",MyName,pos(95, 0, 225),""));
-    !add_task(task("TASK_GOTO_POSITION",MyName,pos(95, 0, 226),""))
-
-    .
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
+      +going_position(95,0,225);
+      +g_step(1) .
