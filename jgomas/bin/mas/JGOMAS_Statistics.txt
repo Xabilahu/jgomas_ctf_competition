@@ -1,27 +1,20 @@
-Winner Team: AXIS!
-Duration: [10m:0s]
+Winner Team: ALLIED
+Duration: [3m:46s]
 
 Statistics for ALLIED TEAM
 	-GENERAL:
-		* Alive:       	1
-		* Avrg. Health:	100.0
+		* Alive:       	7
+		* Avrg. Health:	77.57143
 
 	-OBJECTIVE:
-		* Times Taken: 	0
+		* Times Taken: 	1
 		* Times Lost:  	0
 
 	-SHOTS:
-<<<<<<< HEAD
-		* EnemyHit:    	4
-		* TeamHit:     	62
-		* FailedHit:   	8
-		* TOTAL:       	74
-=======
-		* EnemyHit:    	47
-		* TeamHit:     	2
-		* FailedHit:   	37
-		* TOTAL:       	86
->>>>>>> origin/unai
+		* EnemyHit:    	27
+		* TeamHit:     	13
+		* FailedHit:   	88
+		* TOTAL:       	128
 
 	-MEDIC PACKS:
 		* Delivered:   	0
@@ -38,78 +31,49 @@ Statistics for ALLIED TEAM
 	-EFICIENCY:
 		* Medic:       	0.0
 		* FieldOps:    	0.0
-<<<<<<< HEAD
-		* Army:        	0.9594594594594594
-=======
-		* Army:        	0.9651162790697675
->>>>>>> origin/unai
+		* Army:        	0.9453125
 
 	-ANTI-EFICIENCY:
 		* Medic:       	0.0
 		* FieldOps:    	0.0
-<<<<<<< HEAD
-		* Army:        	0.016129032258064516
-=======
-		* Army:        	1.5
->>>>>>> origin/unai
+		* Army:        	0.5384615384615384
 
 
 Statistics for AXIS TEAM
 	-GENERAL:
-		* Alive:       	3
-<<<<<<< HEAD
-		* Avrg. Health:	96.0
-=======
-		* Avrg. Health:	72.0
->>>>>>> origin/unai
+		* Alive:       	7
+		* Avrg. Health:	74.42857
 
 	-OBJECTIVE:
 		* Times Taken: 	0
-		* Times Lost:  	0
+		* Times Lost:  	1
 
 	-SHOTS:
-<<<<<<< HEAD
-		* EnemyHit:    	6
-		* TeamHit:     	0
-		* FailedHit:   	80
-		* TOTAL:       	86
-=======
-		* EnemyHit:    	35
-		* TeamHit:     	12
-		* FailedHit:   	113
-		* TOTAL:       	160
->>>>>>> origin/unai
+		* EnemyHit:    	56
+		* TeamHit:     	38
+		* FailedHit:   	162
+		* TOTAL:       	256
 
 	-MEDIC PACKS:
-		* Delivered:   	7
-		* Team Taken:  	3
-		* Enemy Taken: 	1
-		* Not Taken:   	3
-
-	-AMMO PACKS:
 		* Delivered:   	4
-		* Team Taken:  	2
+		* Team Taken:  	0
 		* Enemy Taken: 	0
 		* Not Taken:   	0
 
+	-AMMO PACKS:
+		* Delivered:   	8
+		* Team Taken:  	5
+		* Enemy Taken: 	0
+		* Not Taken:   	1
+
 	-EFICIENCY:
-<<<<<<< HEAD
-		* Medic:       	0.0
-		* FieldOps:    	0.0
-		* Army:        	0.9883720930232558
-=======
-		* Medic:       	0.5714285714285714
-		* FieldOps:    	1.0
-		* Army:        	0.98125
->>>>>>> origin/unai
+		* Medic:       	1.0
+		* FieldOps:    	0.875
+		* Army:        	0.97265625
 
 	-ANTI-EFICIENCY:
-		* Medic:       	0.14285714285714285
+		* Medic:       	0.0
 		* FieldOps:    	0.0
-<<<<<<< HEAD
-		* Army:        	0.0
-=======
-		* Army:        	0.25
->>>>>>> origin/unai
+		* Army:        	0.18421052631578946
 
 

@@ -4,7 +4,7 @@ manager("Manager").
 
 team("ALLIED").
 
-type("CLASS_SOLDIER").
+type("CLASS_MEDIC").
 
 { include("jgomas.asl") }
 
@@ -15,33 +15,8 @@ type("CLASS_SOLDIER").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-//?current_task(T);
+?current_task(T);
 //.println(T);
-
-?my_position(XP,YP,ZP);
-?destination(DX,DY,DZ);
-
-!distance(pos(DX,DY,DZ));
-?distance(D);
-
-.println(D);
-
-if(D < 150){
-    .println("dentroif");
-    .my_team("ALLIED",E1);
-    //.my_team("ALLIED_MEDIC",E2);
-    .println(E1);
-    .concat("ready(1)", Content);
-    .send_msg_with_conversation_id(E1,tell,Content,"INT");
-    /*.concat("ready(1)", Content1);
-    .send_msg_with_conversation_id(E2,tell,Content1,"INT");*/
-    //.send_msg_with_conversation_id("SOLDIER_DOWN_2",tell,Content,"INT");
-    //.send_msg_with_conversation_id("M2",tell,Content,"INT");
-    //.send_msg_with_conversation_id("M1",tell,Content,"INT");
-    //.send_msg_with_conversation_id("SOLDIER_DOWN_1",tell,Content,"INT");
-    .println("enviado");
-}
-
 
 if (Length > 0) {
     +bucle(0);
@@ -169,6 +144,7 @@ if (Length > 0) {
        }
        .
 
+
  
 +cfm_agree[source(M)]
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfm_agree GOES HERE.")};
@@ -186,14 +162,27 @@ if (Length > 0) {
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
-+!init
-   <-
-    +initial_task(task(1000,"TASK_GET_OBJECTIVE","Manager",pos(224,0,224),""));
++ready(A)[source(M)]
+    <-
+    .println("ALTOKE");
+    ?objective(X,Y,Z);
     -tasks(_);
     +tasks([]);
-    .random(R);
+    !add_task(task(5000, "TASK_GET_OBJECTIVE", "M1", pos(X,Y,Z), ""));
+    ?tasks(T);
+    .println(T);
+    -current_task(_);
+    +current_task(task(5000, "TASK_GET_OBJECTIVE", "M1", pos(X,Y,Z), ""));
+    -ready(A).
+
++!init
+   <- 
     .my_name(MyName);
+    +initial_task(task(1000,"TASK_GET_OBJECTIVE",MyName,pos(224,0,224),""));
+    -tasks(_);
+    +tasks([]);
     ?my_position(X,Y,Z);
-    +destination(X+175,Y,Z-88-R*2);
-    !add_task(task("TASK_GOTO_POSITION",MyName,pos(X+175,Y,Z-88-R*2),""));
-	!add_task(task("TASK_ATTACK",MyName,pos(X,Y,Z-88-R*2),"")).
+    !add_task(task("TASK_ATTACK",MyName,pos(90, 0, 225),""));
+    !add_task(task("TASK_GOTO_POSITION",MyName,pos(90, 0, 226),""))
+
+    .
