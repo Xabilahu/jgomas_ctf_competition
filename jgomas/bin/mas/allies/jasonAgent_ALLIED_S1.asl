@@ -16,20 +16,25 @@ type("CLASS_SOLDIER").
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
 if(not ready){
-/*    ?my_position(X,Y,Z);
-    ?going_position(GX,GY,GZ);
+    ?g_step(S);
+    if(S==1){
+        ?going_position(GX,GY,GZ);
+        !distance(pos(GX, 0, GZ));
+        ?distance(D);
 
-    !distance(pos(GX, 0, GZ));
-    ?distance(D);   
-    .println(D);
-    if(D < 1 & g_step(1)){
-        -going_position(GX,GY,GZ);
-        +going_position(GX,GY,GZ+5);
-        -g_step(1);
-    }else{*/
-        ?going_position(GX,GY,GZ); // Quitar si descomentar
+        if(D < 1){
+            -going_position(_,_,_);
+            +waiting_position(6,GY,GZ);
+            -g_step(_);
+            +g_step(2);
+        }
+
         +order(move,GX,GZ);
-    /*}*/
+    }
+    if(S==2){
+        ?waiting_position(WX,WY,WZ);
+        +order(move,WX,WZ);
+    }
 }
 
 if(objectivePackTaken(on)){
@@ -195,5 +200,6 @@ if (Length > 0) {
 
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
-      +going_position(110,0,225);
+      ?my_position(X,Y,Z);
+      +going_position(X,0,25);
       +g_step(1) . 
