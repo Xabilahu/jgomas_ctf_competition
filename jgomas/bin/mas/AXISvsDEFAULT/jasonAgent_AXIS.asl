@@ -197,7 +197,8 @@ patrollingRadius(32).
                 .concat("enemy(", ObjectX, ", ", ObjectY, ", ", ObjectZ, ")", MsgContent);
                 .send_msg_with_conversation_id(MyTeam, tell, MsgContent, "INT");
             }
-        }.
+        }
+        .
 
 /**
  * Action to do if this agent cannot shoot.
@@ -389,7 +390,8 @@ patrollingRadius(32).
       -cfa_refuse.  
 
 +enemy(X, Y, Z)[source(M)]
-    <-  !add_task(task("TASK_GOTO_POSITION", "Manager", pos(X, Y, Z), ""));
+    <-  .my_name(MName);
+        !add_task(task("TASK_GOTO_POSITION", MName, pos(X, Y, Z), ""));
         -+state(standing);
         -+prev_pos(X, Y, Z);
         -enemy(X, Y, Z)[source(M)].
