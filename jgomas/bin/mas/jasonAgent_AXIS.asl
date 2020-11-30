@@ -328,5 +328,11 @@ patrollingRadius(64).
 /////////////////////////////////
 
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
+   <-
+    -tasks(_);
+    +tasks([]);
+    .my_name(MyName);
+    ?my_position(X,Y,Z);
+    !add_task(task("TASK_GOTO_POSITION",MyName,pos(110, 0, 235),""));
+    .
 
