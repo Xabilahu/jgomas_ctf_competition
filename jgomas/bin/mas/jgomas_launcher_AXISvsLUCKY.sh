@@ -6,10 +6,10 @@ T4:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsDEFAULT/jasonAgent_A
 T5:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsDEFAULT/jasonAgent_AXIS_MEDIC.asl);
 T6:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsDEFAULT/jasonAgent_AXIS_MEDIC.asl);
 T7:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsDEFAULT/jasonAgent_AXIS.asl);
-A1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_MEDIC_DEFAULT.asl);
-A2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_MEDIC_DEFAULT.asl);
-A3:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_FIELDOPS_DEFAULT.asl);
-A4:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_FIELDOPS_DEFAULT.asl);
-A5:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_DEFAULT.asl);
-A6:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_DEFAULT.asl);
-A7:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(jasonAgent_ALLIED_DEFAULT.asl)"
+A1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED_MEDIC.asl);
+A2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED_MEDIC.asl);
+A3:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED_FIELDOPS.asl);
+A4:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED_FIELDOPS.asl);
+A5:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED.asl);
+A6:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED.asl);
+A7:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsLUCKY/jasonAgent_ALLIED.asl)"
