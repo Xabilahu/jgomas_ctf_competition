@@ -9,7 +9,7 @@ T7:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(AXISvsDEFAULT/jasonAgent_A
 SOLDIER_UP_1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_upside_soldier.asl);
 SOLDIER_UP_2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_upside_soldier.asl);
 SOLDIER_UP_3:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_upside_soldier.asl);
-M1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_MEDIC_M1.asl);
-M2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_MEDIC_M2.asl);
-SOLDIER_DOWN_1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_S1.asl);
-SOLDIER_DOWN_2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_S2.asl);"
+M1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_upside_soldier.asl);
+M2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_MEDIC_M1.asl);
+SOLDIER_DOWN_1:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_MEDIC_M1.asl);
+SOLDIER_DOWN_2:es.upv.dsic.gti_ia.JasonJGomas.BasicTroopJasonArch(allies/jasonAgent_ALLIED_MEDIC_M1.asl);"

@@ -24,7 +24,7 @@ if(S==1){
 
     if(D < 1){
         -going_position(_,_,_);
-        +waiting_position(GX+200,GY,GZ);
+        +waiting_position(GX+215,GY,GZ);
         -g_step(_);
         +g_step(2);
     }
@@ -36,7 +36,7 @@ if(S==2){
     ?waiting_position(WX,WY,WZ);
     !distance(pos(WX, 0, WZ));
     ?distance(D);
-    if(D < 50 & not sent){
+    if(D < 150 & not sent){
         .my_team("ALLIED",E1);
         .concat("ready", Content);
         .send_msg_with_conversation_id(E1,tell,Content,"INT");
@@ -50,6 +50,7 @@ if(S==2){
 
 if(objectivePackTaken(on)){
     +order(help);
+    -+my_health_threshold(0);
 }
 
 if (Length > 0) {

@@ -15,6 +15,7 @@ type("CLASS_MEDIC").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
+
 if(not ready){
     ?g_step(S);
     if(S==1){
@@ -24,7 +25,7 @@ if(not ready){
 
         if(D < 1){
             -going_position(_,_,_);
-            +waiting_position(6,GY,GZ);
+            +waiting_position(40,GY,GZ);
             -g_step(_);
             +g_step(2);
         }
@@ -39,6 +40,8 @@ if(not ready){
 
 if(objectivePackTaken(on)){
     +order(help);
+    -+my_health_threshold(0);
+
 }
 
 if (Length > 0) {
@@ -200,11 +203,17 @@ if (Length > 0) {
 
  +!checkMedicAction
      <-  
-        create_medic_pack;
-        -+medicAction(on).
+        if(not objectivePackTaken(on)){
+            create_medic_pack;
+            -+medicAction(on);
+        }
+        else{
+            -+medicAction(off);
+        }
+.
 
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
       ?my_position(X,Y,Z);
-      +going_position(X,0,235);
+      +going_position(X,0,213);
       +g_step(1).  
