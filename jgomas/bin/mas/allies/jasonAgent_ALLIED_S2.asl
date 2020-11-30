@@ -32,12 +32,16 @@ if(not ready){
     /*}*/
 }
 
+if(objectivePackTaken(on)){
+    +order(help);
+}
+
 if (Length > 0) {
     +bucle(0);
     
     -+aimed("false");
     
-    while (aimed("false") & bucle(X) & (X < Length)) {
+    while (not no_shoot("true") & bucle(X) & (X < Length)) {
         
         //.println("En el bucle, y X vale:", X);
         
@@ -56,11 +60,19 @@ if (Length > 0) {
             ?my_formattedTeam(MyTeam);
             
             if (Team == 200) {  // Only if I'm ALLIED
-				
+                
                 ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
                 +aimed_agent(Object);
                 -+aimed("true");
                 
+            }  else {
+                if (Team == 100) {
+                    .nth(3, Object, Angle);
+                    if (math.abs(Angle) < 0.1) {
+                        +no_shoot("true");
+                        .println("ALLIES in front, not aiming!");
+                    } 
+                }
             }
             
         }
@@ -68,12 +80,17 @@ if (Length > 0) {
         -+bucle(X+1);
         
     }
+
+    if (no_shoot("true")) {
+        -aimed_agent(_);
+        -+aimed("false");
+        -no_shoot("true");
+    }
     
     
 }
 
 -bucle(_).
-
 
 +look_response(FOVObjects)[source(M)]
     <-  //-waiting_look_response;

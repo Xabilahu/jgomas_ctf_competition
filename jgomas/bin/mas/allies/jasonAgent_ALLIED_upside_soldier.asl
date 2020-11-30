@@ -17,14 +17,14 @@ type("CLASS_SOLDIER").
 
 //X+175,Y,Z-88-R*2
 ?g_step(S);
-if(not attack & S==1){
+if(S==1){
     ?going_position(GX,GY,GZ);
     !distance(pos(GX, 0, GZ));
     ?distance(D);
 
     if(D < 1){
         -going_position(_,_,_);
-        +waiting_position(GX+175,GY,GZ);
+        +waiting_position(GX+200,GY,GZ);
         -g_step(_);
         +g_step(2);
     }
@@ -32,28 +32,32 @@ if(not attack & S==1){
     +order(move,GX,GZ);
 }
 
-if(not attack & S==2){
+if(S==2){
     ?waiting_position(WX,WY,WZ);
     !distance(pos(WX, 0, WZ));
     ?distance(D);
-    if(D < 20 & not sent){
+    if(D < 50 & not sent){
         .my_team("ALLIED",E1);
         .concat("ready", Content);
         .send_msg_with_conversation_id(E1,tell,Content,"INT");
         +sent;
+        -g_step(_);
+        +g_step(3);
     } 
     
     +order(move,WX,WZ);
 }
 
-
+if(objectivePackTaken(on)){
+    +order(help);
+}
 
 if (Length > 0) {
     +bucle(0);
     
     -+aimed("false");
     
-    while (aimed("false") & bucle(X) & (X < Length)) {
+    while (not no_shoot("true") & bucle(X) & (X < Length)) {
         
         //.println("En el bucle, y X vale:", X);
         
@@ -72,11 +76,19 @@ if (Length > 0) {
             ?my_formattedTeam(MyTeam);
             
             if (Team == 200) {  // Only if I'm ALLIED
-				
+                
                 ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
                 +aimed_agent(Object);
                 -+aimed("true");
                 
+            }  else {
+                if (Team == 100) {
+                    .nth(3, Object, Angle);
+                    if (math.abs(Angle) < 0.1) {
+                        +no_shoot("true");
+                        .println("ALLIES in front, not aiming!");
+                    } 
+                }
             }
             
         }
@@ -84,12 +96,17 @@ if (Length > 0) {
         -+bucle(X+1);
         
     }
+
+    if (no_shoot("true")) {
+        -aimed_agent(_);
+        -+aimed("false");
+        -no_shoot("true");
+    }
     
     
 }
 
 -bucle(_).
-
 
 +look_response(FOVObjects)[source(M)]
     <-  //-waiting_look_response;
@@ -191,21 +208,9 @@ if (Length > 0) {
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
-/*+!init
-   <-
-    +initial_task(task(1000,"TASK_GET_OBJECTIVE","Manager",pos(224,0,224),""));
-    -tasks(_);
-    +tasks([]);
-    .random(R);
-    .my_name(MyName);
-    ?my_position(X,Y,Z);
-    +destination(X+175,Y,Z-88-R*2);
-    !add_task(task("TASK_GOTO_POSITION",MyName,pos(X+175,Y,Z-88-R*2),""));
-	!add_task(task("TASK_ATTACK",MyName,pos(X,Y,Z-88-R*2),"")).*/
-
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
     ?my_position(X,Y,Z);
     .random(R);
-    +going_position(X,Y,Z-88-R*2);
+    +going_position(X,Y,Z-110-R*2);
     +g_step(1) .
