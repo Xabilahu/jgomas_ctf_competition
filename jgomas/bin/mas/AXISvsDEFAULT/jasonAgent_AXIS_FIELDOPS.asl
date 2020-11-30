@@ -9,7 +9,7 @@ team("AXIS").
 type("CLASS_FIELDOPS").
 
 // Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(30).
+patrollingRadius(32).
 
 
 
@@ -82,7 +82,6 @@ patrollingRadius(30).
                         .nth(3, Object, Angle);
                         if (math.abs(Angle) < 0.1) {
                             +no_shoot("true");
-                            .println("AXIS in front, not aiming!");
                         } 
                     }
                 }
@@ -98,6 +97,7 @@ patrollingRadius(30).
             -+aimed("false");
             -no_shoot("true");
         }
+        
         
     }
 
@@ -159,8 +159,17 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!perform_look_action .
-/// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
++!perform_look_action 
+    <-  ?fovObjects(FOVObjects);
+        for(.member(CurrentObject, FOVObjects)) {
+            .nth(1, CurrentObject, ObjectTeam);
+            .nth(6, CurrentObject, pos(ObjectX, ObjectY, ObjectZ));
+            if (ObjectTeam == 100) {
+                .my_team("fieldops_AXIS", MyTeam);
+                .concat("enemy(", ObjectX, ", ", ObjectY, ", ", ObjectZ, ")", MsgContent);
+                .send_msg_with_conversation_id(MyTeam, tell, MsgContent, "INT");
+            }
+        }.
 
 /**
  * Action to do if this agent cannot shoot.
@@ -321,10 +330,15 @@ patrollingRadius(30).
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
++enemy(X, Y, Z)[source(M)]
+    <-  !add_task(task("TASK_GOTO_POSITION", "Manager", pos(X, Y, Z), ""));
+        -+state(standing);
+        -enemy(X, Y, Z)[source(M)].
 
 /////////////////////////////////
 //  Initialize variables
 /////////////////////////////////
 
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}. 
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
+

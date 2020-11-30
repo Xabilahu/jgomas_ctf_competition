@@ -96,8 +96,7 @@ patrollingRadius(30).
             -aimed_agent(_);
             -+aimed("false");
             -no_shoot("true");
-        }
-        
+        } 
         
     }
 

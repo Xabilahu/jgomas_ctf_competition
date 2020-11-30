@@ -6,10 +6,10 @@ manager("Manager").
 // Team of troop.
 team("AXIS").
 // Type of troop.
-type("CLASS_FIELDOPS").
+type("CLASS_MEDIC").
 
 // Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(30).
+patrollingRadius(64).
 
 
 
@@ -40,68 +40,54 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-
 +!get_agent_to_aim
     <-  ?debug(Mode); if (Mode<=2) { .println("Looking for agents to aim."); }
-    ?fovObjects(FOVObjects);
-    .length(FOVObjects, Length);
-
-    ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
-
-    if (Length > 0) {
-        +bucle(0);
+        ?fovObjects(FOVObjects);
+        .length(FOVObjects, Length);
         
-        -+aimed("false");
+        ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
         
-        while (not no_shoot("true") & bucle(X) & (X < Length)) {
-            
-            //.println("En el bucle, y X vale:", X);
-            
-            .nth(X, FOVObjects, Object);
-            // Object structure
-            // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
-            .nth(2, Object, Type);
-            
-            ?debug(Mode); if (Mode<=2) { .println("Objeto Analizado: ", Object); }
-            
-            if (Type > 1000) {
-                ?debug(Mode); if (Mode<=2) { .println("I found some object."); }
-            } else {
-                // Object may be an enemy
-                .nth(1, Object, Team);
-                ?my_formattedTeam(MyTeam);
+        if (Length > 0) {
+		    +bucle(0);
+    
+            -+aimed("false");
+    
+            while (aimed("false") & bucle(X) & (X < Length)) {
+  
+                //.println("En el bucle, y X vale:", X);
                 
-                if (Team == 100) {  // Only if I'm AXIS
-                    
-                    ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
-                    +aimed_agent(Object);
-                    -+aimed("true");
-                    
-                }  else {
-                    if (Team == 200) {
-                        .nth(3, Object, Angle);
-                        if (math.abs(Angle) < 0.1) {
-                            +no_shoot("true");
-                            .println("AXIS in front, not aiming!");
-                        } 
+                .nth(X, FOVObjects, Object);
+                // Object structure 
+                // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
+                .nth(2, Object, Type);
+                
+                ?debug(Mode); if (Mode<=2) { .println("Objeto Analizado: ", Object); }
+                
+                if (Type > 1000) {
+                    ?debug(Mode); if (Mode<=2) { .println("I found some object."); }
+                } else {
+                    // Object may be an enemy
+                    .nth(1, Object, Team);
+                    ?my_formattedTeam(MyTeam);
+          
+                    if (Team == 100) {  // Only if I'm AXIS
+				
+ 					    ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
+					    +aimed_agent(Object);
+                        -+aimed("true");
+
                     }
+                    
                 }
+             
+                -+bucle(X+1);
                 
             }
-            
-            -+bucle(X+1);
-            
+                     
+       
         }
 
-        if (no_shoot("true")) {
-            -aimed_agent(_);
-            -+aimed("false");
-            -no_shoot("true");
-        }
-        
-    }
-
-    -bucle(_).
+     -bucle(_).
 
         
 
@@ -193,8 +179,8 @@ patrollingRadius(30).
 /**  You can change initial priorities if you want to change the behaviour of each agent  **/
 +!setup_priorities
     <-  +task_priority("TASK_NONE",0);
-        +task_priority("TASK_GIVE_MEDICPAKS", 0);
-        +task_priority("TASK_GIVE_AMMOPAKS", 2000);
+        +task_priority("TASK_GIVE_MEDICPAKS", 2000);
+        +task_priority("TASK_GIVE_AMMOPAKS", 0);
         +task_priority("TASK_GIVE_BACKUP", 0);
         +task_priority("TASK_GET_OBJECTIVE",1000);
         +task_priority("TASK_ATTACK", 1000);
@@ -298,7 +284,7 @@ patrollingRadius(30).
 
        }
        .
-
+       
 /////////////////////////////////
 //  ANSWER_ACTION_CFM_OR_CFA
 /////////////////////////////////
@@ -322,9 +308,11 @@ patrollingRadius(30).
       -cfa_refuse.  
 
 
+
 /////////////////////////////////
 //  Initialize variables
 /////////////////////////////////
 
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}. 
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
+

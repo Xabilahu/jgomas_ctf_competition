@@ -104,7 +104,6 @@ patrollingRadius(64).
             -no_shoot("true");
         }
         
-        
     }
 
     -bucle(_).
