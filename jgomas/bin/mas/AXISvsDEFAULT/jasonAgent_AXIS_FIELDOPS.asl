@@ -331,7 +331,8 @@ patrollingRadius(32).
       -cfa_refuse.  
 
 +enemy(X, Y, Z)[source(M)]
-    <-  !add_task(task("TASK_GOTO_POSITION", "Manager", pos(X, Y, Z), ""));
+    <-  .my_name(MName);
+        !add_task(task("TASK_GOTO_POSITION", MName, pos(X, Y, Z), ""));
         -+state(standing);
         -enemy(X, Y, Z)[source(M)].
 
