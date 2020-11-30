@@ -9,7 +9,7 @@ team("AXIS").
 type("CLASS_MEDIC").
 
 // Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(64).
+patrollingRadius(30).
 
 
 
@@ -96,8 +96,7 @@ patrollingRadius(64).
             -aimed_agent(_);
             -+aimed("false");
             -no_shoot("true");
-        }
-        
+        } 
         
     }
 
@@ -329,4 +328,3 @@ patrollingRadius(64).
 
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
-

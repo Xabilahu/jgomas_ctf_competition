@@ -4,17 +4,18 @@ debug(3).
 manager("Manager").
 
 // Team of troop.
-team("AXIS").
+team("ALLIED").
 // Type of troop.
 type("CLASS_FIELDOPS").
 
-// Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(30).
+
 
 
 
 
 { include("jgomas.asl") }
+
+
 
 
 // Plans
@@ -38,72 +39,56 @@ patrollingRadius(30).
  * enemy found. Otherwise, the return value is aimed("false")
  *
  * <em> It's very useful to overload this plan. </em>
- *
+ * 
  */
-
 +!get_agent_to_aim
-    <-  ?debug(Mode); if (Mode<=2) { .println("Looking for agents to aim."); }
-    ?fovObjects(FOVObjects);
-    .length(FOVObjects, Length);
+<-  ?debug(Mode); if (Mode<=2) { .println("Looking for agents to aim."); }
+?fovObjects(FOVObjects);
+.length(FOVObjects, Length);
 
-    ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
+?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-    if (Length > 0) {
-        +bucle(0);
+if (Length > 0) {
+    +bucle(0);
+    
+    -+aimed("false");
+    
+    while (aimed("false") & bucle(X) & (X < Length)) {
         
-        -+aimed("false");
+        //.println("En el bucle, y X vale:", X);
         
-        while (not no_shoot("true") & bucle(X) & (X < Length)) {
+        .nth(X, FOVObjects, Object);
+        // Object structure
+        // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
+        .nth(2, Object, Type);
+        
+        ?debug(Mode); if (Mode<=2) { .println("Objeto Analizado: ", Object); }
+        
+        if (Type > 1000) {
+            ?debug(Mode); if (Mode<=2) { .println("I found some object."); }
+        } else {
+            // Object may be an enemy
+            .nth(1, Object, Team);
+            ?my_formattedTeam(MyTeam);
             
-            //.println("En el bucle, y X vale:", X);
-            
-            .nth(X, FOVObjects, Object);
-            // Object structure
-            // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
-            .nth(2, Object, Type);
-            
-            ?debug(Mode); if (Mode<=2) { .println("Objeto Analizado: ", Object); }
-            
-            if (Type > 1000) {
-                ?debug(Mode); if (Mode<=2) { .println("I found some object."); }
-            } else {
-                // Object may be an enemy
-                .nth(1, Object, Team);
-                ?my_formattedTeam(MyTeam);
-                
-                if (Team == 100) {  // Only if I'm AXIS
-                    
-                    ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
-                    +aimed_agent(Object);
-                    -+aimed("true");
-                    
-                }  else {
-                    if (Team == 200) {
-                        .nth(3, Object, Angle);
-                        if (math.abs(Angle) < 0.1) {
-                            +no_shoot("true");
-                            .println("AXIS in front, not aiming!");
-                        } 
-                    }
-                }
+            if (Team == 200) {  // Only if I'm ALLIED
+				
+                ?debug(Mode); if (Mode<=2) { .println("Aiming an enemy. . .", MyTeam, " ", .number(MyTeam) , " ", Team, " ", .number(Team)); }
+                +aimed_agent(Object);
+                -+aimed("true");
                 
             }
             
-            -+bucle(X+1);
-            
         }
-
-        if (no_shoot("true")) {
-            -aimed_agent(_);
-            -+aimed("false");
-            -no_shoot("true");
-        }
+        
+        -+bucle(X+1);
         
     }
+    
+    
+}
 
-    -bucle(_).
-
-        
+-bucle(_).
 
 /////////////////////////////////
 //  LOOK RESPONSE
@@ -124,74 +109,73 @@ patrollingRadius(30).
 //  PERFORM ACTIONS
 /////////////////////////////////
 /**
- * Action to do when agent has an enemy at sight.
- *
- * This plan is called when agent has looked and has found an enemy,
- * calculating (in agreement to the enemy position) the new direction where
- * is aiming.
- *
- *  It's very useful to overload this plan.
- *
- */
+* Action to do when agent has an enemy at sight.
+* 
+* This plan is called when agent has looked and has found an enemy,
+* calculating (in agreement to the enemy position) the new direction where
+* is aiming.
+*
+*  It's very useful to overload this plan.
+* 
+*/
 +!perform_aim_action
     <-  // Aimed agents have the following format:
         // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
         ?aimed_agent(AimedAgent);
         ?debug(Mode); if (Mode<=1) { .println("AimedAgent ", AimedAgent); }
         .nth(1, AimedAgent, AimedAgentTeam);
-        ?debug(Mode); if (Mode<=2) { .println("BAJO EL PUNTO DE MIRA TENGO A ALGUIEN DEL EQUIPO ", AimedAgentTeam); }
+        ?debug(Mode); if (Mode<=2) { .println("BAJO EL PUNTO DE MIRA TENGO A ALGUIEN DEL EQUIPO ", AimedAgentTeam);             }
         ?my_formattedTeam(MyTeam);
 
 
-        if (AimedAgentTeam == 100) {
-        
-            .nth(6, AimedAgent, NewDestination);
-            ?debug(Mode); if (Mode<=1) { .println("NUEVO DESTINO MARCADO: ", NewDestination); }
-            //update_destination(NewDestination);
-        }
-        .
+        if (AimedAgentTeam == 200) {
+    
+                .nth(6, AimedAgent, NewDestination);
+                ?debug(Mode); if (Mode<=1) { .println("NUEVO DESTINO DEBERIA SER: ", NewDestination); }
+          
+            }
+ .
+
+/**
+* Action to do when the agent is looking at.
+*
+* This plan is called just after Look method has ended.
+* 
+* <em> It's very useful to overload this plan. </em>
+* 
+*/
++!perform_look_action .
+   /// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }. 
+
+/**
+* Action to do if this agent cannot shoot.
+* 
+* This plan is called when the agent try to shoot, but has no ammo. The
+* agent will spit enemies out. :-)
+* 
+* <em> It's very useful to overload this plan. </em>
+* 
+*/  
++!perform_no_ammo_action . 
+   /// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_NO_AMMO_ACTION GOES HERE.") }.
     
 /**
- * Action to do when the agent is looking at.
- *
- * This plan is called just after Look method has ended.
- *
- * <em> It's very useful to overload this plan. </em>
- *
- */
-+!perform_look_action .
-/// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
-
-/**
- * Action to do if this agent cannot shoot.
- *
- * This plan is called when the agent try to shoot, but has no ammo. The
- * agent will spit enemies out. :-)
- *
- * <em> It's very useful to overload this plan. </em>
- *
- */
-+!perform_no_ammo_action .
-/// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_NO_AMMO_ACTION GOES HERE.") }.
-
-/**
- * Action to do when an agent is being shot.
- *
- * This plan is called every time this agent receives a messager from
- * agent Manager informing it is being shot.
- *
- * <em> It's very useful to overload this plan. </em>
- *
- */
+     * Action to do when an agent is being shot.
+     * 
+     * This plan is called every time this agent receives a messager from
+     * agent Manager informing it is being shot.
+     * 
+     * <em> It's very useful to overload this plan. </em>
+     * 
+     */
 +!perform_injury_action .
-///<- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_INJURY_ACTION GOES HERE.") }.
-
+    ///<- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_INJURY_ACTION GOES HERE.") }. 
+        
 
 /////////////////////////////////
 //  SETUP PRIORITIES
 /////////////////////////////////
-/**  You can change initial priorities if you want to change the behaviour of each agent  **/
-+!setup_priorities
+/**  You can change initial priorities if you want to change the behaviour of each agent  **/+!setup_priorities
     <-  +task_priority("TASK_NONE",0);
         +task_priority("TASK_GIVE_MEDICPAKS", 0);
         +task_priority("TASK_GIVE_AMMOPAKS", 2000);
@@ -201,7 +185,7 @@ patrollingRadius(30).
         +task_priority("TASK_RUN_AWAY", 1500);
         +task_priority("TASK_GOTO_POSITION", 750);
         +task_priority("TASK_PATROLLING", 500);
-        +task_priority("TASK_WALKING_PATH", 750).   
+        +task_priority("TASK_WALKING_PATH", 1750).   
 
 
 
@@ -217,8 +201,10 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
+
 +!update_targets 
 	<-	?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR UPDATE_TARGETS GOES HERE.") }.
+	
 	
 	
 /////////////////////////////////
@@ -232,11 +218,11 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!checkMedicAction
-<-  -+medicAction(on).
-// go to help
-
-
+ +!checkMedicAction
+     <-  -+medicAction(on).
+      // go to help
+      
+      
 /////////////////////////////////
 //  CHECK FIELDOPS ACTION (ONLY FIELDOPS)
 /////////////////////////////////
@@ -248,10 +234,9 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!checkAmmoAction
-<-  -+fieldopsAction(on).
-//  go to help
-
+ +!checkAmmoAction
+     <-  -+fieldopsAction(on).
+      //  go to help
 
 
 
@@ -277,7 +262,7 @@ patrollingRadius(30).
        if (Ar <= At) { 
           ?my_position(X, Y, Z);
           
-         .my_team("fieldops_AXIS", E1);
+         .my_team("fieldops_ALLIED", E1);
          //.println("Mi equipo intendencia: ", E1 );
          .concat("cfa(",X, ", ", Y, ", ", Z, ", ", Ar, ")", Content1);
          .send_msg_with_conversation_id(E1, tell, Content1, "CFA");
@@ -291,18 +276,17 @@ patrollingRadius(30).
        if (Hr <= Ht) { 
           ?my_position(X, Y, Z);
           
-         .my_team("medic_AXIS", E2);
+         .my_team("medic_ALLIED", E2);
          //.println("Mi equipo medico: ", E2 );
          .concat("cfm(",X, ", ", Y, ", ", Z, ", ", Hr, ")", Content2);
          .send_msg_with_conversation_id(E2, tell, Content2, "CFM");
 
        }
        .
-
+       
 /////////////////////////////////
 //  ANSWER_ACTION_CFM_OR_CFA
 /////////////////////////////////
-
 
     
 +cfm_agree[source(M)]
@@ -327,4 +311,5 @@ patrollingRadius(30).
 /////////////////////////////////
 
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}. 
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
+

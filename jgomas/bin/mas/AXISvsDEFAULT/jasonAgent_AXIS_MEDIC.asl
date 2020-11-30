@@ -6,10 +6,10 @@ manager("Manager").
 // Team of troop.
 team("AXIS").
 // Type of troop.
-type("CLASS_FIELDOPS").
+type("CLASS_MEDIC").
 
 // Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(30).
+patrollingRadius(32).
 
 
 
@@ -40,7 +40,6 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-
 +!get_agent_to_aim
     <-  ?debug(Mode); if (Mode<=2) { .println("Looking for agents to aim."); }
     ?fovObjects(FOVObjects);
@@ -82,7 +81,6 @@ patrollingRadius(30).
                         .nth(3, Object, Angle);
                         if (math.abs(Angle) < 0.1) {
                             +no_shoot("true");
-                            .println("AXIS in front, not aiming!");
                         } 
                     }
                 }
@@ -98,6 +96,7 @@ patrollingRadius(30).
             -+aimed("false");
             -no_shoot("true");
         }
+        
         
     }
 
@@ -159,8 +158,17 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!perform_look_action .
-/// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
++!perform_look_action 
+    <-  ?fovObjects(FOVObjects);
+        for(.member(CurrentObject, FOVObjects)) {
+            .nth(1, CurrentObject, ObjectTeam);
+            .nth(6, CurrentObject, pos(ObjectX, ObjectY, ObjectZ));
+            if (ObjectTeam == 100) {
+                .my_team("medic_AXIS", MyTeam);
+                .concat("enemy(", ObjectX, ", ", ObjectY, ", ", ObjectZ, ")", MsgContent);
+                .send_msg_with_conversation_id(MyTeam, tell, MsgContent, "INT");
+            }
+        }.
 
 /**
  * Action to do if this agent cannot shoot.
@@ -193,8 +201,8 @@ patrollingRadius(30).
 /**  You can change initial priorities if you want to change the behaviour of each agent  **/
 +!setup_priorities
     <-  +task_priority("TASK_NONE",0);
-        +task_priority("TASK_GIVE_MEDICPAKS", 0);
-        +task_priority("TASK_GIVE_AMMOPAKS", 2000);
+        +task_priority("TASK_GIVE_MEDICPAKS", 2000);
+        +task_priority("TASK_GIVE_AMMOPAKS", 0);
         +task_priority("TASK_GIVE_BACKUP", 0);
         +task_priority("TASK_GET_OBJECTIVE",1000);
         +task_priority("TASK_ATTACK", 1000);
@@ -298,7 +306,7 @@ patrollingRadius(30).
 
        }
        .
-
+       
 /////////////////////////////////
 //  ANSWER_ACTION_CFM_OR_CFA
 /////////////////////////////////
@@ -321,10 +329,16 @@ patrollingRadius(30).
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
++enemy(X, Y, Z)[source(M)]
+    <-  .my_name(MName);
+        !add_task(task("TASK_GOTO_POSITION", MName, pos(X, Y, Z), ""));
+        -+state(standing);
+        -enemy(X, Y, Z)[source(M)].
 
 /////////////////////////////////
 //  Initialize variables
 /////////////////////////////////
 
 +!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}. 
+   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}.  
+

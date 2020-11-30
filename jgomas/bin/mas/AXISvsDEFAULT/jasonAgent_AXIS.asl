@@ -6,10 +6,10 @@ manager("Manager").
 // Team of troop.
 team("AXIS").
 // Type of troop.
-type("CLASS_FIELDOPS").
+type("CLASS_SOLDIER").
 
 // Value of "closeness" to the Flag, when patrolling in defense
-patrollingRadius(30).
+patrollingRadius(32).
 
 
 
@@ -26,9 +26,17 @@ patrollingRadius(30).
 *
 *******************************/
 
++!generate_safe_position
+    <- ?my_position(_, Y, _);
+       .random(X);
+       .random(Z);
+       NewX = X * 10 + 50;
+       NewZ = Z * 20 + 225;
+       !safe_pos(NewX, Y, NewZ).
+
 /////////////////////////////////
-//  GET AGENT TO AIM 
-/////////////////////////////////  
+//  GET AGENT TO AIM
+/////////////////////////////////
 /**
  * Calculates if there is an enemy at sight.
  *
@@ -38,9 +46,8 @@ patrollingRadius(30).
  * enemy found. Otherwise, the return value is aimed("false")
  *
  * <em> It's very useful to overload this plan. </em>
- *
+ * 
  */
-
 +!get_agent_to_aim
     <-  ?debug(Mode); if (Mode<=2) { .println("Looking for agents to aim."); }
     ?fovObjects(FOVObjects);
@@ -82,7 +89,6 @@ patrollingRadius(30).
                         .nth(3, Object, Angle);
                         if (math.abs(Angle) < 0.1) {
                             +no_shoot("true");
-                            .println("AXIS in front, not aiming!");
                         } 
                     }
                 }
@@ -98,6 +104,7 @@ patrollingRadius(30).
             -+aimed("false");
             -no_shoot("true");
         }
+        
         
     }
 
@@ -131,8 +138,9 @@ patrollingRadius(30).
  * is aiming.
  *
  *  It's very useful to overload this plan.
- *
+ * 
  */
+
 +!perform_aim_action
     <-  // Aimed agents have the following format:
         // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
@@ -159,8 +167,38 @@ patrollingRadius(30).
  * <em> It's very useful to overload this plan. </em>
  *
  */
-+!perform_look_action .
-/// <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR PERFORM_LOOK_ACTION GOES HERE.") }.
++!perform_look_action 
+    <-  ?tasks(TaskList);
+        ?current_task(task(_, TaskType, _, pos(TaskX, TaskY, TaskZ), _));
+        if (TaskType == "TASK_GOTO_POSITION") { //Prevents bug of getting stuck in a wall recalculating its path
+            ?prev_pos(X, Y, Z);
+            if (TaskX == X & TaskY == Y & TaskZ == Z) {
+                .delete(task(_, "TASK_GOTO_POSITION", _, pos(TaskX, TaskY, TaskZ), _), TaskList, NewTaskList);
+                -+tasks(NewTaskList);
+                !generate_safe_position;
+                ?safe_pos(SafeX, SafeY, SafeZ);
+                -safe_pos(SafeX, SafeY, SafeZ);
+                .my_name(MyName);
+                !add_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+                ?task_priority("TASK_GOTO_POSITION", Priority);
+                -+current_task(task(Priority, "TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+                .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
+            }
+        }
+        ?my_position(MyX, MyY, MyZ);
+        -+prev_pos(MyX, MyY, MyZ);
+
+        ?fovObjects(FOVObjects);
+        for(.member(CurrentObject, FOVObjects)) {
+            .nth(1, CurrentObject, ObjectTeam);
+            .nth(6, CurrentObject, pos(ObjectX, ObjectY, ObjectZ));
+            if (ObjectTeam == 100) {
+                .my_team("backup_AXIS", MyTeam);
+                .concat("enemy(", ObjectX, ", ", ObjectY, ", ", ObjectZ, ")", MsgContent);
+                .send_msg_with_conversation_id(MyTeam, tell, MsgContent, "INT");
+            }
+        }
+        .
 
 /**
  * Action to do if this agent cannot shoot.
@@ -193,15 +231,15 @@ patrollingRadius(30).
 /**  You can change initial priorities if you want to change the behaviour of each agent  **/
 +!setup_priorities
     <-  +task_priority("TASK_NONE",0);
-        +task_priority("TASK_GIVE_MEDICPAKS", 0);
-        +task_priority("TASK_GIVE_AMMOPAKS", 2000);
+        +task_priority("TASK_GIVE_MEDICPAKS", 2000);
+        +task_priority("TASK_GIVE_AMMOPAKS", 0);
         +task_priority("TASK_GIVE_BACKUP", 0);
         +task_priority("TASK_GET_OBJECTIVE",1000);
         +task_priority("TASK_ATTACK", 1000);
         +task_priority("TASK_RUN_AWAY", 1500);
         +task_priority("TASK_GOTO_POSITION", 750);
         +task_priority("TASK_PATROLLING", 500);
-        +task_priority("TASK_WALKING_PATH", 750).   
+        +task_priority("TASK_WALKING_PATH", 750);.   
 
 
 
@@ -218,7 +256,38 @@ patrollingRadius(30).
  *
  */
 +!update_targets 
-	<-	?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR UPDATE_TARGETS GOES HERE.") }.
+    <-  ?tasks(TaskList);
+        if (.member(task(_, "TASK_PATROLLING", _, _, _), TaskList)) {
+            .delete(task(_, "TASK_PATROLLING", _, _, _), TaskList, NewTaskList);
+            -+tasks(NewTaskList);
+            .println("Removed TASK_PATROLLING from my tasks.");
+        }
+
+        ?tasks(TaskListNew);
+        .length(TaskListNew, TaskLength);
+        if (TaskLength <= 0) {
+            !generate_safe_position;
+            ?safe_pos(SafeX, SafeY, SafeZ);
+            -safe_pos(SafeX, SafeY, SafeZ);
+            .my_name(MyName);
+            !add_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+            .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
+        } else { // This removes TASK_WALKING_PATH bug: infinite cycle of +1 Priority to TASK_WALKING_PATH
+            ?current_task(task(Priority, TaskType, _, _, _));
+
+            if (TaskType == "TASK_WALKING_PATH" & task_priority(TaskType, TaskPrio) & Priority > (TaskPrio + 1)) {
+                .delete(task(_, "TASK_WALKING_PATH", _, _, _), TaskListNew, UnBuggedTaskList1);
+                .delete(task(_, "TASK_GOTO_POSITION", _, _, _), UnBuggedTaskList1, UnBuggedTaskList2);
+                -+tasks(UnBuggedTaskList2);
+                !generate_safe_position;
+                ?safe_pos(SafeX, SafeY, SafeZ);
+                -safe_pos(SafeX, SafeY, SafeZ);
+                .my_name(MyName);
+                !add_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ), ""));
+                -+current_task(task("TASK_GOTO_POSITION", MyName, pos(SafeX, SafeY, SafeZ)));
+                .println("Added New Task! Going to Position: ", SafeX, ", ", SafeY, ", ", SafeZ);
+            }
+        }.
 	
 	
 /////////////////////////////////
@@ -251,7 +320,6 @@ patrollingRadius(30).
 +!checkAmmoAction
 <-  -+fieldopsAction(on).
 //  go to help
-
 
 
 
@@ -288,7 +356,7 @@ patrollingRadius(30).
        ?my_health_threshold(Ht);
        ?my_health(Hr);
        
-       if (Hr <= Ht) { 
+       if (Hr <= Ht) {  
           ?my_position(X, Y, Z);
           
          .my_team("medic_AXIS", E2);
@@ -298,12 +366,12 @@ patrollingRadius(30).
 
        }
        .
-
+       
 /////////////////////////////////
 //  ANSWER_ACTION_CFM_OR_CFA
 /////////////////////////////////
 
-
+   
     
 +cfm_agree[source(M)]
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfm_agree GOES HERE.")};
@@ -321,10 +389,20 @@ patrollingRadius(30).
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
++enemy(X, Y, Z)[source(M)]
+    <-  .my_name(MName);
+        !add_task(task("TASK_GOTO_POSITION", MName, pos(X, Y, Z), ""));
+        -+state(standing);
+        -+prev_pos(X, Y, Z);
+        -enemy(X, Y, Z)[source(M)].
 
 /////////////////////////////////
 //  Initialize variables
 /////////////////////////////////
 
-+!init
-   <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")}. 
++!init 
+    <-  .my_name(MyName);
+        -+current_task(task(749, "DUMMY_TASK", MyName, pos(0, 0, 0), ""));
+        ?my_position(X, Y, Z);
+        +prev_pos(X, Y, Z). 
+
