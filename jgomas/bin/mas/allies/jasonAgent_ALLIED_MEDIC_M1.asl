@@ -41,7 +41,7 @@ if(not ready){
 if(objectivePackTaken(on)){
     +order(help);
     -+my_health_threshold(0);
-
+    -+my_ammo_threshold(0);
 }
 
 if (Length > 0) {
@@ -211,6 +211,7 @@ if (Length > 0) {
             -+medicAction(off);
         }
 .
+   
 
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
