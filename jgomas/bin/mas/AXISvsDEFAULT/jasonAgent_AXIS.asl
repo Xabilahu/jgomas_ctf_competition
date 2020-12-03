@@ -27,12 +27,21 @@ patrollingRadius(32).
 *******************************/
 
 +!generate_safe_position
-    <- ?my_position(_, Y, _);
-       .random(X);
-       .random(Z);
-       NewX = X * 10 + 50;
-       NewZ = Z * 20 + 225;
-       !safe_pos(NewX, Y, NewZ).
+    <-  ?my_position(_, Y, _);
+        .random(A); //select zone between up and down right entry
+        if (A < 0.2){ //up
+            .random(X);
+            .random(Z);
+            NewX = X * 10 + 20;
+            NewZ = Z * 10 + 190;
+        }
+        else{ //down
+            .random(X);
+            .random(Z);
+            NewX = X * 10 + 50;
+            NewZ = Z * 20 + 225;
+        }
+        !safe_pos(NewX, Y, NewZ).
 
 /////////////////////////////////
 //  GET AGENT TO AIM
