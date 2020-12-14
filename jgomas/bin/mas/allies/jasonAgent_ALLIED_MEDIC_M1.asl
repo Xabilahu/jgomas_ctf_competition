@@ -50,17 +50,17 @@ if(objectivePackTaken(on)){
         +decided;
         ?axis_bottom(AA);
         .println(AA);
+        .my_team("ALLIED", E1);
         if(AA > 7 - AA){
             +back_decided_up;
             ?my_position(XX,YY,ZZ);
             -+g_step(1);
             -+going_position(XX,YY,ZZ-100);
-            .my_team("ALLIED", E1);
             .concat("back_decided_up", Content1);
-            .send_msg_with_conversation_id(E1, tell, Content1, "INT");
-            .concat("decided", Content2);
-            .send_msg_with_conversation_id(E1, tell, Content2, "INT");   
+            .send_msg_with_conversation_id(E1, tell, Content1, "INT");  
         }
+        .concat("decided", Content2);
+        .send_msg_with_conversation_id(E1, tell, Content2, "INT"); 
     }else{
         if(back_decided_up){
             ?g_step(GS);
