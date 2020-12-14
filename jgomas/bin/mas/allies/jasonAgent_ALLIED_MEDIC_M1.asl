@@ -4,7 +4,7 @@ manager("Manager").
 
 team("ALLIED").
 
-type("CLASS_MEDIC").
+type("CLASS_SOLDIER").
 
 { include("jgomas.asl") }
 
@@ -13,8 +13,10 @@ type("CLASS_MEDIC").
 ?fovObjects(FOVObjects);
 .length(FOVObjects, Length);
 
-?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
+?axis_bottom(UWU);
+.println(UWU);
 
+?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
 if(not ready){
     ?g_step(S);
@@ -42,6 +44,57 @@ if(objectivePackTaken(on)){
     +order(help);
     -+my_health_threshold(0);
     -+my_ammo_threshold(0);
+
+    if(not decided){
+        .println("Deciding back");
+        +decided;
+        ?axis_bottom(AA);
+        .println(AA);
+        if(AA > 7 - AA){
+            +back_decided_up;
+            ?my_position(XX,YY,ZZ);
+            -+g_step(1);
+            -+going_position(XX,YY,ZZ-100);
+            .my_team("ALLIED", E1);
+            .concat("back_decided_up", Content1);
+            .send_msg_with_conversation_id(E1, tell, Content1, "INT");
+            .concat("decided", Content2);
+            .send_msg_with_conversation_id(E1, tell, Content2, "INT");   
+        }
+    }else{
+        if(back_decided_up){
+            ?g_step(GS);
+            if(GS == 1){
+                ?going_position(GX,GY,GZ);
+                !distance(pos(GX, 0, GZ));
+                ?distance(D);
+
+                if(D < 1){
+                    -g_step(_);
+                    +g_step(2);
+                    ?my_position(XX,YY,ZZ);
+                    -+going_position(XX-150,YY,ZZ);
+                }else{
+                    +order(move,GX,GZ);
+                }
+
+            }
+            if(GS == 2){
+                .println("---------------------------");
+                ?going_position(GX,GY,GZ);
+                !distance(pos(GX, 0, GZ));
+                ?distance(D);
+
+                if(D < 1){
+                    -g_step(2);
+                    +g_step(0);
+                }else{
+                    +order(move,GX,GZ);
+                }
+            }
+        }
+    }
+    
 }
 
 if (Length > 0) {
@@ -129,7 +182,69 @@ if (Length > 0) {
             }
  .
 
- +!perform_look_action .
+ +!perform_look_action 
+    <- 
+        ?objective(OX,OY,OZ);
+        !distance(pos(OX,OY,OZ));
+        ?distance(D);
+
+        if( D > 60){
+            ?fovObjects(FOVObjects);
+            .length(FOVObjects, Length);
+            +ploop(0);
+
+            while (ploop(X) & (X < Length)) {
+                .nth(X, FOVObjects, Object);
+                // Object structure
+                // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
+                .nth(1, Object, Team);
+
+                if(Team == 200){
+                    .nth(0,Object,Id);
+                    !check_axis_bottom(Id);
+                }
+
+
+                -+ploop(X+1);
+            }
+            -ploop(_);
+        }
+
+.
+
+
++!check_axis_bottom(Id)
+    <- 
+        ?already_seen(AS);
+        .length(AS, LengthAS);
+        +found("false");
+
+        if(LengthAS > 0){
+            +cloop(0);
+            while(cloop(C) & C < LengthAS & found("false")){
+                .nth(C,AS,Current);
+                if(Current == Id){
+                    -found("false");
+                    +found("true");
+                }
+                -+cloop(C+1);
+            }
+            if(found("false")){
+                .concat(AS,[Id],NewT);
+                -already_seen(_);
+                +already_seen(NewT);
+                -axis_bottom(A);
+                +axis_bottom(A+1);
+            }
+            -found(_);
+            -cloop(_);
+        }else{
+            .concat(AS,[Id], NewT);
+            -already_seen(_);
+            +already_seen(NewT);
+            -+axis_bottom(1);
+        }
+.
 
  +!perform_no_ammo_action .
 
@@ -183,8 +298,6 @@ if (Length > 0) {
        }
        .
 
-
- 
 +cfm_agree[source(M)]
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfm_agree GOES HERE.")};
       -cfm_agree.  
@@ -201,20 +314,10 @@ if (Length > 0) {
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR cfa_refuse GOES HERE.")};
       -cfa_refuse.  
 
- +!checkMedicAction
-     <-  
-        if(not objectivePackTaken(on)){
-            create_medic_pack;
-            -+medicAction(on);
-        }
-        else{
-            -+medicAction(off);
-        }
-.
-   
-
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
       ?my_position(X,Y,Z);
+      +already_seen([]);
+      +axis_bottom(0);
       +going_position(X,0,213);
       +g_step(1).  
