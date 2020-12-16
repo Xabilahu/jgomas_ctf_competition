@@ -10,7 +10,12 @@ AUTHORS:
     - Erik Angulo
     - Oihane Roca
 
-Spent time: ----
+Spent time: around 17 hours each
+
+################ PRE-IMPLEMENTATION #####################
+
+The first thing that was implemented before the subteams were created was to make the the 
+soliders don't shoot each other if another of the same team is in the direction of the bullet.
 
 #########################################################
 ###################### ALLLIED ##########################
