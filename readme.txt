@@ -55,7 +55,7 @@ TASK 2 and TASK 4
 
 #################### STRATEGY ###########################
 We divided the team in 2 subteams,  one formed by 4 agents, 2 medics and 2 fieldops, and the other one is formed
-by 3 agents. Once the match starts, the subteam of 4 soldiers move to the base. At the same time, the
+by 3 soldier agents. Once the match starts, the subteam of 4 soldiers move to the base. At the same time, the
 other subteam, the one formed by 3 soldiers, go to the ALLIED base. When both of the subteams get to the
 desired location, they will start patrolling.
 
