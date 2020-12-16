@@ -40,13 +40,37 @@ back) until he reaches the base.
 
 ################# IMPLEMENTATION ########################
 
-Created agents: "jasonAgent_ALLIED_XXXXX.asl"
-                "jasonAgent_ALLIED_XXXXX.asl"
+Created agents: "jasonAgent_ALLIED_MEDIC_M1.asl"
+                "jasonAgent_ALLIED_upside_soldier.asl"
 
 
 #########################################################
 ######################## AXIS ###########################
 #########################################################
+
+TASK 2 and TASK 4
+    - Implement a winning AXIS team for the default ALLIED team
+    - Implement a winning AXIS team for any ALLIED team
+
+
+#################### STRATEGY ###########################
+We divided the team in 2 subteams,  one formed by 4 agents, 2 medics and 2 fieldops, and the other one is formed
+by 3 agents. Once the match starts, the subteam of 4 soldiers move to the base. At the same time, the
+other subteam, the one formed by 3 soldiers, go to the ALLIED base. When both of the subteams get to the
+desired location, they will start patrolling.
+
+Each type of troop communicate between them and when they see an enemy they will tell their parterns to go
+with him in order to try to kill them. 
+
+When a partner calls for medic packs or calls for ammo, the both agents (medics when call for medic packs
+and fieldops when the call is for ammo) will go to the one that has call in order to give it help.
+
+
+################# IMPLEMENTATION ########################
+
+Created agents: "jasonAgent_AXIS.asl"
+                "jasonAgent_AXIS_FIELDOPS.asl"
+                "jasonAgent_AXIS_MEDIC.asl"
 
 
 Bibliography
