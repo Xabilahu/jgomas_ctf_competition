@@ -15,9 +15,6 @@ type("CLASS_SOLDIER").
 
 ?debug(Mode); if (Mode<=1) { .println("El numero de objetos es:", Length); }
 
-?axis_bottom(UWU);
-.println(UWU);
-
 //X+175,Y,Z-88-R*2
 ?g_step(S);
 if(S==1){
@@ -39,7 +36,7 @@ if(S==2){
     ?waiting_position(WX,WY,WZ);
     !distance(pos(WX, 0, WZ));
     ?distance(D);
-    if(D < 100 & not sent){
+    if(D < 150 & not sent){
         .my_team("ALLIED",E1);
         .concat("ready", Content);
         .send_msg_with_conversation_id(E1,tell,Content,"INT");
@@ -55,62 +52,6 @@ if(objectivePackTaken(on)){
     +order(help);
     -+my_health_threshold(0);
     -+my_ammo_threshold(0);
-
-    if(not decided){
-        .println("Deciding back");
-        +decided;
-        ?axis_bottom(AA);
-        .println(AA);
-        .my_team("ALLIED", E1);
-        if(AA < 7 - AA){
-            +back_decided_up;
-            ?my_position(XX,YY,ZZ);
-            -p_step(_);
-            +p_step(1);
-            -+going_position(XX,YY,ZZ-100);
-            .concat("back_decided_up", Content1);
-            .send_msg_with_conversation_id(E1, tell, Content1, "INT"); 
-        }
-        .concat("decided", Content2);
-        .send_msg_with_conversation_id(E1, tell, Content2, "INT");  
-    }else{
-        if(back_decided_up){
-            ?p_step(GS);
-            if(GS == 1){
-                ?going_position(GX,GY,GZ);
-                !distance(pos(GX, 0, GZ));
-                ?distance(D);
-
-                if(D < 1){
-                    -p_step(_);
-                    +p_step(2);
-                    ?my_position(XX,YY,ZZ);
-                    -+going_position(XX-150,YY,ZZ);
-                }else{
-                    +order(move,GX,GZ);
-                }
-
-            }
-            if(GS == 2){
-                ?going_position(GX,GY,GZ);
-                !distance(pos(GX, 0, GZ));
-                ?distance(D);
-
-                if(D < 1){
-                    -p_step(2);
-                    +p_step(3);
-                }else{
-                    +order(move,GX,GZ);
-                }
-            }
-
-            if(GS == 3){
-                ?base(BX,BY,BZ);
-                order(move,BX,BZ);
-            }
-        }
-    }
-    
 }
 
 if (Length > 0) {
@@ -198,70 +139,6 @@ if (Length > 0) {
             }
  .
 
-+!perform_look_action 
-    <- 
-        ?objective(OX,OY,OZ);
-        !distance(pos(OX,OY,OZ));
-        ?distance(D);
-
-        if( D > 90){
-            ?fovObjects(FOVObjects);
-            .length(FOVObjects, Length);
-            +ploop(0);
-
-            while (ploop(X) & (X < Length)) {
-                .nth(X, FOVObjects, Object);
-                // Object structure
-                // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
-                .nth(1, Object, Team);
-
-                if(Team == 200){
-                    .nth(0,Object,Id);
-                    !check_axis_bottom(Id);
-                }
-
-
-                -+ploop(X+1);
-            }
-            -ploop(_);
-        }
-
-.
-
-
-+!check_axis_bottom(Id)
-    <- 
-        ?already_seen(AS);
-        .length(AS, LengthAS);
-        +found("false");
-
-        if(LengthAS > 0){
-            +cloop(0);
-            while(cloop(C) & C < LengthAS & found("false")){
-                .nth(C,AS,Current);
-                if(Current == Id){
-                    -found("false");
-                    +found("true");
-                }
-                -+cloop(C+1);
-            }
-            if(found("false")){
-                .concat(AS,[Id],NewT);
-                -already_seen(_);
-                +already_seen(NewT);
-                -axis_bottom(A);
-                +axis_bottom(A+1);
-            }
-            -found(_);
-            -cloop(_);
-        }else{
-            .concat(AS,[Id], NewT);
-            -already_seen(_);
-            +already_seen(NewT);
-            -+axis_bottom(1);
-        }
-.
-
  +!perform_look_action .
 
  +!perform_no_ammo_action .
@@ -336,9 +213,6 @@ if (Length > 0) {
 +!init
    <- ?debug(Mode); if (Mode<=1) { .println("YOUR CODE FOR init GOES HERE.")};
     ?my_position(X,Y,Z);
-    +base(X,Y,Z);
-    +already_seen([]);
-    +axis_bottom(0);
     .random(R);
     +going_position(X,Y,Z-110-R*2);
     +g_step(1) .
