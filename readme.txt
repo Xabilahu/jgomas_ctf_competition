@@ -12,6 +12,8 @@ AUTHORS:
 
 Spent time: around 17 hours each
 
+Github Link: https://www.github.com/kaecius/jgomas_ctf_competition
+
 ################ PRE-IMPLEMENTATION #####################
 
 The first thing that was implemented before the subteams were created was to make the the 
